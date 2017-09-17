@@ -1,0 +1,12 @@
+- [ x ] Implement method toString if the class Address. The return value should match the string expected by AddressTest.
+- [ x ] Implement method toString if the class Player. The return value should match the string expected by PlayerTest.
+- [ x ] Implement method toString if the class Team. The return value should match the string expected by TeamTest.
+- [ x ] Mark the following data members of the class Team as json properties: id, abbreviation, name, conference, and division. Once it's done, method readTeamFromJson of class DatabaseWriter should work correctly.
+- [ x ] Modify method readAddressFromTxt of the class DatabaseWriter. Note that unlike the NBA example you don't have to rely on a regular expression to read data.
+- [ x ] Modify method readAddressFromCsv of the class DatabaseWriter. Look up opencsv documentation and follow their tutorial for reading a record from a file into an array of strings. Note that the first line of the CSV file contains headers and should be ignored.
+- [ x ] Modify method writeTeamTable of the class DatabaseWriter. Look at the SQLiteExample for inspiration. Create a valid SQL insert statement and provide parameters (team details).
+- [ x ] Modify method writeAddressTable of the class DatabaseWriter. Look at the SQLiteExample for inspiration. Create a valid SQL insert statement and provide parameters (address details). Note that address.team is a foreign key that references team.idpk (autoincrement number, not a string).
+- [ x ] Modify method writePlayerTable of the class DatabaseWriter. Look at the SQLiteExample for inspiration. Create a valid SQL insert statement and provide parameters (playerdetails). Note that player.team is a foreign key that references team.idpk (autoincrement number, not a string).
+- [ ] Modify method getDivisions of the class DatabaseReader to retrieve a list of all different divisions.
+- [ ] Modify method getTeams of the class DatabaseReader to retrieve a list of all teams from a specific division.
+- [ ] Modify method getTeamInfo of the class DatabaseReader to retrieve a roster, address, and a logo of a specific team. 
