@@ -80,7 +80,7 @@ public class DatabaseWriter {
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
                 if (nextLine != null) {
-                    Player player = new Player(nextLine[0], nextLine[1], nextLine[2], nextLine[3]);
+                    Player player = new Player(nextLine[0], nextLine[1], nextLine[4], nextLine[2]);
                     roster.add(player);
                 }
             }
