@@ -231,6 +231,7 @@ public class DatabaseWriter {
      */
     public void writePlayerTable(String db_filename, ArrayList<Player> roster) throws SQLException {
         Connection db_connection = DriverManager.getConnection(SQLITEDBPATH + db_filename);
+        db_connection.createStatement().execute("PRAGMA foreign_keys = ON;");
         for (Player player: roster) {
             Statement statement = db_connection.createStatement();
             ResultSet results = statement.executeQuery("SELECT idpk FROM team WHERE team.name= '" + player.getTeam() + "';");

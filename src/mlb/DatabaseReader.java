@@ -46,14 +46,13 @@ public class DatabaseReader {
         this.connect();
         try {
             // TODO: Write an SQL statement to retrieve a league (conference) and a division
-            String sql = "select distinct division, conference from team";
+            String sql = "select distinct division, conference FROM team";
             // TODO: Add all 6 combinations to the ArrayList divisions
             Statement stat = db_connection.createStatement();
             ResultSet results = stat.executeQuery(sql);
             
             while (results.next()) {
-                System.out.println(results.getString(1) + " | " + results.getString(2));
-                divisions.add(results.getString(1) + " | " + results.getString(2));
+                divisions.add(results.getString("conference") + " | " + results.getString("division"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
@@ -80,7 +79,7 @@ public class DatabaseReader {
             results = stat.executeQuery(sql);
             
             while (results.next()) {
-                teams.add(results.getString(1));
+                teams.add(results.getString("name"));
             }
 
             results.close();
@@ -95,13 +94,59 @@ public class DatabaseReader {
      * @return Team info
      */
     public Team getTeamInfo(String teamName) {
+        Address address;
         Team team = null;
-        // TODO: Retrieve team info (roster, address, and logo) from the database
-        
-        String idSql = "select idpk from team where name = 'Chicago Cubs';";
-        String addressSql = "select street, city, state, zip from address where team = 5;";
-        String logo = "select logo from team where name = 'Chicago Cubs'";
-        
+        this.connect();
+        try {
+            Statement statement = this.db_connection.createStatement();
+
+            String idSql = "select * from team where name = '" + teamName + "';";
+            ResultSet idRes = statement.executeQuery(idSql);            
+
+            int teamId = idRes.getInt(1);
+            String name = idRes.getString("id");
+            String abbr = idRes.getString("abbr");
+            String teamString = idRes.getString("name");
+            String conf = idRes.getString("conference");
+            String division = idRes.getString("division");
+            byte[] logo = idRes.getBytes("logo");
+
+            team = new Team(name, abbr, teamString, conf, division);    
+            team.setLogo(logo);
+            
+            String addressSql = "select * from address where team = " + teamId + ";";
+            ResultSet addressRes = statement.executeQuery(addressSql);
+            String site = addressRes.getString("site");
+            String street = addressRes.getString("street");
+            String city = addressRes.getString("city");
+            String state = addressRes.getString("state");
+            String zip = addressRes.getString("zip");
+            String url = addressRes.getString("url");
+            String phone = addressRes.getString("phone");
+            String team_id = Integer.toString(teamId);
+            
+            address = new Address(team_id, site, street, city, state, zip, phone, url);
+            team.setAddress(address);
+            
+            String rosterSql = "select * from player where team =" + teamId + ";";
+            ResultSet rosterRes = statement.executeQuery(rosterSql);
+            
+            ArrayList<Player> rosterObj = new ArrayList<Player>();
+            
+            while (rosterRes.next()) {
+                Player tmp = new Player(rosterRes.getString("id"),rosterRes.getString("name"), 
+                                        rosterRes.getString("team"), rosterRes.getString("position"));
+ 
+                rosterObj.add(tmp);
+            }
+            team.setRoster(rosterObj);
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            this.disconnect();
+        }
         return team;
     }
 }
