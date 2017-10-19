@@ -30,12 +30,27 @@ import java.util.List;
  * @author aaron
  */
 public class DatabaseWriter {
+    
+    Connection db_connection = null;
+
+    public DatabaseWriter() {
+        
+        /* 
+        * MySQL db connection
+        */
+        try {
+            this.db_connection = DriverManager.getConnection 
+                ("jdbc:mysql://localhost:3306/UNIVERSITY?" + "user=root&password=test4pass");
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+        
     /*****************
      * Read Department from .txt
      * @param filename
      *****************/
     public ArrayList<Department> readDepartmentFromTxt(String filename) {
-        // Women and Gender Studies|Char Kunkel|kunkelch@luther.edu|Koren|https://www.luther.edu/women-gender-studies/
         ArrayList<Department> deptList = new ArrayList<>();
         try {
             Scanner fs = new Scanner(new File(filename));
@@ -59,11 +74,8 @@ public class DatabaseWriter {
      * @throws java.sql.SQLException 
      *******************************/
     public void writeDepartmentTable(ArrayList<Department> deptList) throws SQLException {
-        Connection db_connection = null;
-        db_connection  = DriverManager.getConnection("jdbc:mysql://localhost:3306/UNIVERSITY?" + "user=root&password=test4pass");
-        
         for (Department department: deptList) {
-            Statement statement = db_connection.createStatement();
+//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.DEPARTMENT (name, building) VALUES(?, ?)"; 
                     
@@ -76,7 +88,7 @@ public class DatabaseWriter {
             statement_prepared.executeUpdate();
         }
         
-        db_connection.close();
+//        this.db_connection.close();
     }
     
     /*****************
@@ -108,11 +120,8 @@ public class DatabaseWriter {
      * @throws java.sql.SQLException 
      *******************************/
     public void writeSemesterTable(ArrayList<Semester> semList) throws SQLException {
-        Connection db_connection = null;
-        db_connection  = DriverManager.getConnection("jdbc:mysql://localhost:3306/UNIVERSITY?" + "user=root&password=test4pass");
-        
         for (Semester sem: semList) {
-            Statement statement = db_connection.createStatement();
+//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.SEMESTER (year, season) VALUES(?, ?)"; 
                     
@@ -125,7 +134,7 @@ public class DatabaseWriter {
             statement_prepared.executeUpdate();
         }
         
-        db_connection.close();
+//        this.db_connection.close();
     }
     
     /*****************
@@ -133,18 +142,40 @@ public class DatabaseWriter {
      * @param filename
      *****************/
     public ArrayList<Course> readCourseFromTxt(String filename) {
+        Integer deptId;
+        String abbrv; 
+        String number;
+        String title; 
+        StringBuilder stringArray = new StringBuilder();
         
         ArrayList<Course> courseList = new ArrayList<>();
         try {
             Scanner fs = new Scanner(new File(filename));
             while (fs.hasNextLine()) {
                 String[] courseArray = fs.nextLine().split(" ");
+                
                 //TODO: need to do a query to get the ID for the department
-                //ACCTG 110 Introduction to Accounting
-                //TODO: String replace the first two elements, and then the whole thing is the title then.
-                Course course = new Course("NULL",courseArray[0],courseArray[1],courseArray[2],"4");
+                deptId = 1;
+              
+                abbrv = courseArray[0];
+                number = courseArray[1];
+                System.out.println(number);
+                // Ignore the last two elements, create a string from the 
+                // remaining elements
+                for(int i=2; i < courseArray.length; i++) {
+                    stringArray.append(courseArray[i]);
+                    stringArray.append(" ");
+                }
+                //remove last space
+                stringArray.setLength(stringArray.length() -1);
+                title = stringArray.toString();
+                
+                // Clear the stringArray
+                stringArray.setLength(0);
+                
+                Course course = new Course(deptId.toString(), abbrv, number, title,"4");
                 courseList.add(course);
-                System.out.println(course);
+//                System.out.println(course);
             }
         } catch (IOException ex) {
             System.out.println("Fail");
@@ -160,15 +191,12 @@ public class DatabaseWriter {
      * @throws java.sql.SQLException 
      *******************************/
     public void writeCourseTable(ArrayList<Course> courseList) throws SQLException {
-        Connection db_connection = null;
-        db_connection  = DriverManager.getConnection("jdbc:mysql://localhost:3306/UNIVERSITY?" + "user=root&password=test4pass");
-        
         for (Course cor: courseList) {
-            Statement statement = db_connection.createStatement();
+//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.COURSE (department, abbreviation, number, title, credits) VALUES(?, ?, ?, ?, ?)"; 
                     
-            PreparedStatement statement_prepared = db_connection.prepareStatement(sql);
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
             
             statement_prepared.setString(1, cor.getDepartment());
             statement_prepared.setString(2, cor.getAbbreviation());
@@ -179,6 +207,14 @@ public class DatabaseWriter {
             statement_prepared.executeUpdate();
         }
         
-        db_connection.close();
     }
+    
+    public void closeConnection() {
+        try {
+            db_connection.close();
+        } catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+    
 }

@@ -20,7 +20,7 @@ create table UNIVERSITY.SEMESTER (
 create table UNIVERSITY.COURSE (
     id int NOT NULL auto_increment,
     department int,
-    abbreviatino text,
+    abbreviation text,
     number int,
     title text,
     credits int,

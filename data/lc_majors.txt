@@ -4,12 +4,12 @@ Asian Studies|Modern Languages, Literatures and Linguistics
 Anthropology|Sociology, Anthropology, Social Work
 Art|Visual and Performing Arts
 Art History|Visual and Performing Arts
-Biblical Languages|Religion
+Biblical Languages|Classics
 Biology|Biology
 Chemistry|Chemistry
 Chinese|Modern Languages, Literatures and Linguistics
-Classical Studies|Modern Languages, Literatures and Linguistics
-Classics|Modern Languages, Literatures and Linguistics
+Classical Studies|Classics
+Classics|Classics
 Communication Studies|Communication Studies
 Computer Science|Computer Science
 Dance|Visual and Performing Arts
@@ -24,12 +24,12 @@ Health and Fitness Promotion|Health and Physical Education
 History|History
 International Business|Economics, Accounting, and Management
 International Studies|International Studies
-Journalism|English
+Journalism|Communication Studies
 Linguistics|Modern Languages, Literatures and Linguistics
 Management|Economics, Accounting, and Management
 Mathematics|Mathematics
 Mathematics/Statistics|Mathematics
-Museum Studies|History
+Museum Studies|Library
 Music|Music
 Neuroscience|Biology
 Nordic Studies|Modern Languages, Literatures and Linguistics
