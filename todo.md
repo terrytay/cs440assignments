@@ -12,6 +12,15 @@
 - [ x ] Populate table SEMESTER with the academic years of 2015-2016, 2016-2017, 2017-2018, and 2018-2019.
 - [ ] Populate table MAJOR with Luther majors.
 
+
+To do:
+make another map for Courses that then saves the dept_id so that we don't have to query all the time.
+
+
+
+
+
+
 ## Constraints (5)
 - [ ] Grade can’t be anything other than A, B, C, D, F, or W (null is OK)
 - [ ] Faculty endDate must be after startDate or null

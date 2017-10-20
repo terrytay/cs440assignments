@@ -41,7 +41,7 @@ public class WriterDriver {
             System.out.println("Connecting");
             
         } catch (SQLException ex){
-            System.out.println("Failed");
+            System.out.println("Failed in creating connection: driver");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
@@ -57,7 +57,7 @@ public class WriterDriver {
         try {
             dw.writeDepartmentTable(deptList);
         } catch (SQLException ex) {
-            System.out.println("Fail");
+            System.out.println("Fail in driver: department");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
@@ -73,7 +73,7 @@ public class WriterDriver {
         try {
             dw.writeSemesterTable(semList);
         } catch (SQLException ex) {
-            System.out.println("Fail");
+            System.out.println("Fail in driver: semester");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
@@ -82,20 +82,39 @@ public class WriterDriver {
         }
 
         /***************************
-        *  Read Semester from TXT 
+        *  Read Course from TXT 
         *  and populate the database
         ****************************/
         ArrayList<Course> courseList = dw.readCourseFromTxt("data/lc_courses.txt");
         try {
             dw.writeCourseTable(courseList);
         } catch (SQLException ex) {
-            System.out.println("Fail");
+            System.out.println("Fail in driver: course");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 
         }
+        
+
+
+        /***************************
+        *  Read Major from TXT 
+        *  and populate the database
+        ****************************/
+        ArrayList<Major> majorList = dw.readMajorFromTxt("data/lc_majors.txt");
+        try {
+            dw.writeMajorTable(majorList);
+        } catch (SQLException ex) {
+            System.out.println("Fail in driver: major");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+  
     }
     
 }

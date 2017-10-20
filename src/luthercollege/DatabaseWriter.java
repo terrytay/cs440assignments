@@ -5,7 +5,6 @@
  */
 package luthercollege;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,10 +19,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -78,7 +79,6 @@ public class DatabaseWriter {
 //            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.DEPARTMENT (name, building) VALUES(?, ?)"; 
-                    
                    
             PreparedStatement statement_prepared = db_connection.prepareStatement(sql);
             
@@ -87,8 +87,7 @@ public class DatabaseWriter {
             
             statement_prepared.executeUpdate();
         }
-        
-//        this.db_connection.close();
+
     }
     
     /*****************
@@ -107,7 +106,7 @@ public class DatabaseWriter {
                 System.out.println(sem);
             }
         } catch (IOException ex) {
-            System.out.println("Fail");
+            System.out.println("Fail in read semester table");
             //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -142,11 +141,69 @@ public class DatabaseWriter {
      * @param filename
      *****************/
     public ArrayList<Course> readCourseFromTxt(String filename) {
-        Integer deptId;
         String abbrv; 
         String number;
         String title; 
         StringBuilder stringArray = new StringBuilder();
+        
+            Map<String, String> dictionary = new HashMap<String, String>()
+                {{
+                    put("ACCTG", "Economics, Accounting, and Management");
+                    put("AFRS", "Africana Studies");
+                    put("AS", "Modern Languages, Literatures and Linguistics");
+                    put("ANTH", "Sociology, Anthropology, Social Work");
+                    put("ATHTR", "Health and Physical Education");
+                    put("ART", "Visual and Performing Arts");
+                    put("ARTH", "Visual and Performing Arts");
+                    put("BIO", "Biology");
+                    put("CHEM", "Chemistry");
+                    put("CHIN", "Modern Languages, Literatures and Linguistics");
+                    put("CLAS", "Classics");
+                    put("COMS", "Communication Studies");
+                    put("CS", "Computer Science");
+                    put("DAN", "Visual and Performing Arts");
+                    put("DS", "Computer Science");
+                    put("ECON", "Economics, Accounting, and Management");
+                    put("EDUC", "Education");
+                    put("ENG", "English");
+                    put("ENVS", "Environmental Studies");
+                    put("FCUL", "Modern Languages, Literatures and Linguistics");
+                    put("FREN", "Modern Languages, Literatures and Linguistics");
+                    put("GER", "Modern Languages, Literatures and Linguistics");
+                    put("GRK", "Classics");
+                    put("GS", "Paideia");
+                    put("HEB", "Classics");
+                    put("HIST", "History");
+                    put("HLTH", "Health and Physical Education");
+                    put("INTS", "Economics, Accounting, and Management");
+                    put("IS", "International Studies");
+                    put("JOUR", "English");
+                    put("LAT", "Classics");
+                    put("LING", "Modern Languages, Literatures and Linguistics");
+                    put("MATH", "Mathematics");
+                    put("MGT", "Economics, Accounting, and Management");
+                    put("MUS", "Music");
+                    put("MUST", "History");
+                    put("NEUR", "Psychology");
+                    put("NURS", "Nursing");
+                    put("PAID", "Paideia");
+                    put("PE", "Health and Physical Education");
+                    put("PHIL", "Philosophy");
+                    put("PHYS", "Health and Physical Education");
+                    put("POLS", "Political Science");
+                    put("PSYC", "Psychology");
+                    put("REL", "Religion");
+                    put("RUS", "Modern Languages, Literatures and Linguistics");
+                    put("SCI", "Chemistry");
+                    put("SCST", "Modern Languages, Literatures and Linguistics");
+                    put("SOC", "Sociology, Anthropology, Social Work");
+                    put("SPAN", "Modern Languages, Literatures and Linguistics");
+                    put("SW", "Sociology, Anthropology, Social Work");
+                    put("THE", "Visual and Performing Arts");
+                    put("WGST", "Women and Gender Studies");
+                }};
+                        
+        //TODO: don't do queries all the time to get the correct department name, make another Map?
         
         ArrayList<Course> courseList = new ArrayList<>();
         try {
@@ -154,12 +211,24 @@ public class DatabaseWriter {
             while (fs.hasNextLine()) {
                 String[] courseArray = fs.nextLine().split(" ");
                 
-                //TODO: need to do a query to get the ID for the department
-                deptId = 1;
-              
-                abbrv = courseArray[0];
+                
+                abbrv = courseArray[0];     
+
+                // query to get the department id
+
+                String fullDepartmentName = dictionary.get(abbrv);
+                
+                Statement statement = db_connection.createStatement();
+                ResultSet results = statement.executeQuery("SELECT id FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + fullDepartmentName + "';");
+                results.next();
+                int departmentNum = results.getInt(1);
+                
+                String dept_id = Integer.toString(departmentNum);
+                
+                System.out.println(dept_id);
+                //end query
+                
                 number = courseArray[1];
-                System.out.println(number);
                 // Ignore the last two elements, create a string from the 
                 // remaining elements
                 for(int i=2; i < courseArray.length; i++) {
@@ -173,12 +242,12 @@ public class DatabaseWriter {
                 // Clear the stringArray
                 stringArray.setLength(0);
                 
-                Course course = new Course(deptId.toString(), abbrv, number, title,"4");
+                Course course = new Course(dept_id, abbrv, number, title,"4");
                 courseList.add(course);
-//                System.out.println(course);
             }
-        } catch (IOException ex) {
-            System.out.println("Fail");
+        } catch (IOException | SQLException ex) {
+            System.out.println("Fail in Course");
+            System.out.println("Error: " + ex.getMessage());
             //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -192,7 +261,6 @@ public class DatabaseWriter {
      *******************************/
     public void writeCourseTable(ArrayList<Course> courseList) throws SQLException {
         for (Course cor: courseList) {
-//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.COURSE (department, abbreviation, number, title, credits) VALUES(?, ?, ?, ?, ?)"; 
                     
@@ -208,6 +276,64 @@ public class DatabaseWriter {
         }
         
     }
+    
+    
+    
+    /*****************
+     * Read Major from .txt
+     * @param filename
+     *****************/
+    public ArrayList<Major> readMajorFromTxt(String filename) {
+        String department; 
+        String name;
+        
+        ArrayList<Major> majorList = new ArrayList<>();
+        try {
+            Scanner fs = new Scanner(new File(filename));
+            while (fs.hasNextLine()) {
+                String[] majors = fs.nextLine().split("\\|");
+                
+                Major majorElem = new Major(majors[1], majors[0]);
+                majorList.add(majorElem);
+
+            }
+        } catch (IOException ex) {
+            System.out.println("Fail in read major");
+            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return majorList;
+    }
+    
+    /*******************************
+     * Populate Major table
+     * @param majorList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeMajorTable(ArrayList<Major> majorList) throws SQLException {
+        for (Major maj: majorList) {            
+            String sql = "insert into UNIVERSITY.MAJOR (department, name) VALUES(?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+            
+            //query to get the departmentId
+            Statement statement = db_connection.createStatement();
+                ResultSet results = statement.executeQuery("SELECT id FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + maj.getDepartment() + "';");
+                results.next();
+                int departmentNum = results.getInt(1);
+                
+                String dept_id = Integer.toString(departmentNum);
+                
+                System.out.println(dept_id);
+
+            statement_prepared.setString(1, dept_id);
+            statement_prepared.setString(2, maj.getName());
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
     
     public void closeConnection() {
         try {

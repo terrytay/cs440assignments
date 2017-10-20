@@ -631,8 +631,8 @@ NURS 425 Synthesis of Clinical Practice Across The Lifespan
 NURS 478 Health Care Management
 NURS 480 Leadership Capstone
 NURS 490 Senior Project
-PAID 111D Paideia I:Enduring Questions
-PAID 112D Enduring Questions
+PAID 111 Paideia I:Enduring Questions
+PAID 112 Enduring Questions
 PAID 450 Ethical Choices
 PHIL 100 Introduction to Philosophy
 PHIL 105 Reasons
