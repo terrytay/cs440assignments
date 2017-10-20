@@ -277,8 +277,7 @@ public class DatabaseWriter {
         
     }
     
-    
-    
+
     /*****************
      * Read Major from .txt
      * @param filename
@@ -333,6 +332,59 @@ public class DatabaseWriter {
         }
         
     }
+    
+    
+    /*****************
+     * Read Student from .txt
+     * @param filename
+     *****************/
+    public ArrayList<Student> readStudentFromTxt(String filename) {
+        
+        ArrayList<Student> studentList = new ArrayList<>();
+        try {
+            Scanner fs = new Scanner(new File(filename));
+            while (fs.hasNextLine()) {
+                String[] students = fs.nextLine().split("\\|");
+                
+                
+                
+                
+                
+//                Student student = new Major(majors[1], majors[0]);
+//                studentList.add(majorElem);
+
+            }
+        } catch (IOException ex) {
+            System.out.println("Fail in read major");
+            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return studentList;
+    }
+    
+    /*******************************
+     * Populate Major table
+     * @param majorList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeStudentTable(ArrayList<Student> studentList) throws SQLException {
+        for (Student stu: studentList) {            
+            String sql = "insert into UNIVERSITY.MAJOR (department, name) VALUES(?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+            
+            
+
+            statement_prepared.setString(1, "1");
+            statement_prepared.setString(2, stu.getName());
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
+    
+    
     
     
     public void closeConnection() {

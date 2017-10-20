@@ -607,30 +607,6 @@ NEUR 254 Experimental Neuroscience
 NEUR 362 Neuroscience
 NEUR 485 Neuroscience Seminar
 NEUR 490 Senior Project
-NURS 138 Human Sexuality
-NURS 234 Pathways to Practice I
-NURS 235 Pathways to Practice I Clinical
-NURS 236 Pathways to Practice II
-NURS 237 Pathways to Practice II Clinical
-NURS 370 Health and Healing I
-NURS 371 Health and Healing I Clinical
-NURS 372 Health and Healing II
-NURS 373 Health and Healing II Clinical
-NURS 374 Behaviorial Health Care
-NURS 376 Behavioral Health Care Clinical
-NURS 377 Family/Child Nursing
-NURS 378 Family/Child Nursing Clinical
-NURS 382 Gerontological Nursing
-NURS 384 Evidence Based Practice
-NURS 386 Professional Nursing Practice: A Conceptual Immersion Experience
-NURS 388 Health Informatics
-NURS 390 Nursing Leadership in Health Care
-NURS 420 Population-Based Care
-NURS 421 Population-Based Care Clinical
-NURS 425 Synthesis of Clinical Practice Across The Lifespan
-NURS 478 Health Care Management
-NURS 480 Leadership Capstone
-NURS 490 Senior Project
 PAID 111 Paideia I:Enduring Questions
 PAID 112 Enduring Questions
 PAID 450 Ethical Choices

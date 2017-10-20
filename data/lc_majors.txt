@@ -33,7 +33,6 @@ Museum Studies|Library
 Music|Music
 Neuroscience|Psychology
 Nordic Studies|Modern Languages, Literatures and Linguistics
-Nursing|Nursing
 Paideia|Paideia
 Philosophy|Philosophy
 Physical Education|Health and Physical Education

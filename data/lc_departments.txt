@@ -15,7 +15,6 @@ Library|Ryan Gjerde|gjerdery@luther.edu|Preus Library|https://www.luther.edu/lib
 Mathematics|Eric Westlund|wester01@luther.edu|Olin|https://www.luther.edu/mathematics/
 Modern Languages, Literatures and Linguistics|Nancy Gates Madsen|madsna01@luther.edu|Main|https://www.luther.edu/mlll/
 Music|Daniel Baldwin|baldwida@luther.edu|Jenson-Noble|https://www.luther.edu/music/
-Nursing|April Rowe Neal|roweap01@luther.edu|Rochester|https://www.luther.edu/nursing/
 Paideia|Rebecca Sullivan|sullivre@luther.edu|Main|https://www.luther.edu/paideia/
 Philosophy|Storm Bailey|baileyst@luther.edu|Ockham House|https://www.luther.edu/philosophy/
 Physics|James Perez|perezjam@luther.edu|Valders|https://www.luther.edu/physics/

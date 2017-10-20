@@ -211,19 +211,6 @@ Ryn, Michael|1792|vanrmi01
 Whitfield, Andrew|1764|whitan01
 Yates, Benjamin|1367|yatebe01
 
-NURSING
-McGohan, LaDonna|1478|mcgola01
-Bottema, Sophia|6872|guyeso01
-Bouska, Laura|1453|fritla01
-Carlson, Corine|7396|carlsoco
-Edrington, Janna|1456|edrija01
-Kueny, Angela|1165|oldenban
-Nelson, Jayme|1454|nelsjaym
-Overvold-Ronningen, Mary|3994|overvoma
-Rowe Neal, April|5525|roweap01
-Spier, Jessica|6872|spieje02
-Swanson, James|6872|swanja03
-
 PAIDEIA
 Sullivan, Rebecca|2212|sullivre
 
