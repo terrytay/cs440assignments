@@ -116,15 +116,15 @@ public class WriterDriver {
         }
         
         
-                /***************************
+        /***************************
         *  Read Student names from TXT 
         *  and populate the database
         ****************************/
         ArrayList<Student> studentList = dw.readStudentFromTxt("data/names.txt");
-        System.out.println("not writing to database yet");
+        System.out.println("not writing to database for Student");
 //        try {
 //            dw.writeStudentTable(studentList);
-//        } catch (SQLException ex) {
+//        } catch (SQLException ex) { 
 //            System.out.println("Fail in driver: major");
 //            System.out.println("SQLException: " + ex.getMessage());
 //            System.out.println("SQLState: " + ex.getSQLState());
@@ -132,6 +132,23 @@ public class WriterDriver {
 //            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 //        }
   
+
+        
+        /***************************
+        *  Generate location names and
+        *  and populate the database
+        ****************************/
+        ArrayList<Location> locationList = dw.generateLocations();
+        try {
+            dw.writeLocationTable(locationList);
+        } catch (SQLException ex) { 
+            System.out.println("Fail in driver: major");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
+        }
+  
     }
-    
+
 }

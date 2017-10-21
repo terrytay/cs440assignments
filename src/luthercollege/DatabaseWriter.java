@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Random;
+
 /**
  *
  * @author aaron
@@ -59,10 +61,10 @@ public class DatabaseWriter {
                 String[] department = fs.nextLine().split("\\|");
                 Department dept = new Department(department[0],department[3]);
                 deptList.add(dept);
-//                System.out.println(dept);
+                //System.out.println(dept);
             }
         } catch (IOException ex) {
-            System.out.println("Fail");
+            System.out.println("Fail in read from Department");
             //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -103,7 +105,7 @@ public class DatabaseWriter {
                 String[] semester = fs.nextLine().split(" ");
                 Semester sem = new Semester(semester[1],semester[0]);
                 semesterList.add(sem);
-                System.out.println(sem);
+                //System.out.println(sem);
             }
         } catch (IOException ex) {
             System.out.println("Fail in read semester table");
@@ -225,7 +227,7 @@ public class DatabaseWriter {
                 
                 String dept_id = Integer.toString(departmentNum);
                 
-                System.out.println(dept_id);
+                //System.out.println(dept_id);
                 //end query
                 
                 number = courseArray[1];
@@ -317,13 +319,13 @@ public class DatabaseWriter {
             
             //query to get the departmentId
             Statement statement = db_connection.createStatement();
-                ResultSet results = statement.executeQuery("SELECT id FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + maj.getDepartment() + "';");
-                results.next();
-                int departmentNum = results.getInt(1);
+            ResultSet results = statement.executeQuery("SELECT id FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + maj.getDepartment() + "';");
+            results.next();
+            int departmentNum = results.getInt(1);
+
+            String dept_id = Integer.toString(departmentNum);
                 
-                String dept_id = Integer.toString(departmentNum);
-                
-                System.out.println(dept_id);
+//                System.out.println(dept_id);
 
             statement_prepared.setString(1, dept_id);
             statement_prepared.setString(2, maj.getName());
@@ -340,18 +342,38 @@ public class DatabaseWriter {
      *****************/
     public ArrayList<Student> readStudentFromTxt(String filename) {
         
+        String firstName;
+        String lastName;
+        
         ArrayList<Student> studentList = new ArrayList<>();
         try {
             Scanner fs = new Scanner(new File(filename));
             while (fs.hasNextLine()) {
-                String[] students = fs.nextLine().split("\\|");
+                
+                String name = fs.nextLine();
+                
+//                System.out.println(students);
+                
+                // 0 - 12 for their gradYear id
+                Random gradYearSeason = new Random();
+
+                int  _gradId = gradYearSeason.nextInt(12) + 1;
+                String gradId = Integer.toString(_gradId);
+                //System.out.println(gradId);
                 
                 
+                //28 majors
+                Random studentMajor = new Random();
+
+                int  _majorId = studentMajor.nextInt(28) + 1;
+                String majorId = Integer.toString(_majorId);
+                
+                //TODO
+                String Adviser;
                 
                 
-                
-//                Student student = new Major(majors[1], majors[0]);
-//                studentList.add(majorElem);
+                Student student = new Student(name, gradId, majorId, "0");
+                studentList.add(student);
 
             }
         } catch (IOException ex) {
@@ -363,20 +385,23 @@ public class DatabaseWriter {
     }
     
     /*******************************
-     * Populate Major table
-     * @param majorList 
+     * Populate Student table
+     * @param studentList 
      * @throws java.sql.SQLException 
      *******************************/
     public void writeStudentTable(ArrayList<Student> studentList) throws SQLException {
         for (Student stu: studentList) {            
-            String sql = "insert into UNIVERSITY.MAJOR (department, name) VALUES(?, ?)"; 
+            String sql = "insert into UNIVERSITY.STUDENT (name, graduationDate, major, adviser) VALUES(?, ?, ?, ?)"; 
                     
             PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
-            
-            
 
-            statement_prepared.setString(1, "1");
-            statement_prepared.setString(2, stu.getName());
+            statement_prepared.setString(1, stu.getName());
+            statement_prepared.setString(2, stu.getGradDate());
+            statement_prepared.setString(3, stu.getMajor());
+            statement_prepared.setString(4, stu.getAdviser());
+            
+            System.out.println(statement_prepared);
+            
             
             statement_prepared.executeUpdate();
         }
@@ -387,9 +412,97 @@ public class DatabaseWriter {
     
     
     
+    /*****************
+     * Generate locations
+     * @param filename
+     *****************/
+    public ArrayList<Location> generateLocations() {
+
+        ArrayList<Location> locationList= new ArrayList<>();
+        
+        try {
+            Statement statement = db_connection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT distinct building FROM UNIVERSITY.DEPARTMENT;");
+        
+            //iterate over resultset and create the locations
+            //https://stackoverflow.com/questions/15517736/iterating-over-resultset-and-adding-its-value-in-an-arraylist
+            
+            ArrayList<String> buildingList = new ArrayList<String>();
+            while (results.next()) {
+                buildingList.add(results.getString(1));                
+            }
+
+        //All buildings have 4 floors, with 25 rooms on each floor.
+        //the top two floors have offices. Bottom two floors are
+        //used for classrooms.
+        StringBuilder roomNum;
+        String purpose;
+        StringBuilder theRoom;
+        
+        for (String building : buildingList) {
+            for (int floor = 1; floor < 5; floor++) {
+                for (int room = 0; room < 25; room++) {
+
+                    if (floor == 3 || floor == 4){
+                        purpose = "office";
+                    } else {
+                        purpose = "classroom";
+                    }
+                    //There has to be a better way to do this.....
+                    String floorNum = Integer.toString(floor);
+                    if (room >= 0 && room <= 9){
+                        roomNum = new StringBuilder()
+                                .append("0")
+                                .append(room);
+                    } else {
+                        roomNum = new StringBuilder()
+                                .append(room);
+                    }
+                    
+                    theRoom = new StringBuilder()
+                            .append(floorNum)
+                            .append(roomNum);
+                    
+                    Location location = new Location(building, theRoom.toString(), purpose);
+                    locationList.add(location);
+                }
+            }
+        }
+            
+        } catch(SQLException ex) {
+            System.out.println("Failed inside of location generation");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+    
+        return locationList;
+    }
+    
+        /*******************************
+     * Populate Location table
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeLocationTable(ArrayList<Location> locationList) throws SQLException {
+        for (Location loc: locationList) {
+
+            String sql = "insert into UNIVERSITY.LOCATION (building, room, purpose) VALUES(?, ?, ?)"; 
+                    
+            PreparedStatement statement_prepared = db_connection.prepareStatement(sql);
+            
+            statement_prepared.setString(1, loc.getBuilding());
+            statement_prepared.setString(2, loc.getRoom());
+            statement_prepared.setString(3, loc.getPurpose());            
+            statement_prepared.executeUpdate();
+        }
+    }
+
+    
+    
     public void closeConnection() {
         try {
             db_connection.close();
+            System.out.println("Closing connection");
         } catch (SQLException ex) {
             System.out.println(ex);
         }

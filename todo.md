@@ -8,14 +8,14 @@
     - [ x ] format the course's name correctly
 - [ ] Populate table SECTION with fictional classes (course sections). Assume all 1xx courses have 4 sections, 2xx and 3xx courses have 2 section, 4xx courses have 1 section per year.
 - [ ] Populate table ENROLLMENT with fictional enrollment data.
-- [ ] Populate table LOCATION with a mix of real buildings and fictional rooms.
+- [ x ] Populate table LOCATION with a mix of real buildings and fictional rooms.
 - [ x ] Populate table SEMESTER with the academic years of 2015-2016, 2016-2017, 2017-2018, and 2018-2019.
 - [ x ] Populate table MAJOR with Luther majors.
 
 
 To do:
-make another map for Courses that then saves the dept_id so that we don't have to query all the time.
-
+- [ x ] make another map for Courses that then saves the dept_id so that we don't have to query all the time.
+- [ ] Export database using Server -> Data Export
 
 
 ## Triggers (5)
