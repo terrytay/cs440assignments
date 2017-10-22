@@ -31,13 +31,10 @@ public class WriterDriver {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        
-    
+
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/UNIVERSITY?" + "user=root&password=test4pass");
-            // make sure it's added to Library/Build Path in project properties
 
-            //TODO: Create database with sql file.
             System.out.println("Connecting");
             
         } catch (SQLException ex){
@@ -45,7 +42,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            //Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         try {
@@ -181,7 +177,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 
         }
     
@@ -198,7 +193,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 
         }
 
@@ -215,7 +209,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 
         }
         
@@ -234,7 +227,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
 
         }
         
@@ -251,7 +243,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         /***************************
@@ -282,7 +273,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -299,7 +289,6 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
   
         
@@ -316,14 +305,10 @@ public class WriterDriver {
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
         try {
-           
-        
-            
             //used a little regex and find/replace to change
             //my .sql file into the following code
             System.out.println("creating the views");
@@ -375,11 +360,13 @@ public class WriterDriver {
                 + "ORDER BY sec.id;");
             
         } catch(SQLException ex) {
-            System.out.println("failed in views");
+            System.out.println("Failed in creation of views");
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
+        
+        dw.closeConnection();
     }
 
 }

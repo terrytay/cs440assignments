@@ -6,9 +6,6 @@
 package luthercollege;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 import java.sql.Connection;
@@ -21,9 +18,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.List;
 import java.util.Map;
 
 import java.util.Random;
@@ -61,11 +55,10 @@ public class DatabaseWriter {
                 String[] department = fs.nextLine().split("\\|");
                 Department dept = new Department(department[0],department[3]);
                 deptList.add(dept);
-                //System.out.println(dept);
+
             }
         } catch (IOException ex) {
             System.out.println("Fail in read from Department");
-            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return deptList;
@@ -78,7 +71,6 @@ public class DatabaseWriter {
      *******************************/
     public void writeDepartmentTable(ArrayList<Department> deptList) throws SQLException {
         for (Department department: deptList) {
-//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.DEPARTMENT (name, building) VALUES(?, ?)"; 
                    
@@ -122,11 +114,9 @@ public class DatabaseWriter {
      *******************************/
     public void writeSemesterTable(ArrayList<Semester> semList) throws SQLException {
         for (Semester sem: semList) {
-//            Statement statement = this.db_connection.createStatement();
             
             String sql = "insert into UNIVERSITY.SEMESTER (year, season) VALUES(?, ?)"; 
                     
-                   
             PreparedStatement statement_prepared = db_connection.prepareStatement(sql);
             
             statement_prepared.setString(1, sem.getYear());
@@ -134,8 +124,7 @@ public class DatabaseWriter {
             
             statement_prepared.executeUpdate();
         }
-        
-//        this.db_connection.close();
+
     }
     
     /*****************
@@ -204,8 +193,6 @@ public class DatabaseWriter {
                     put("THE", "Visual and Performing Arts");
                     put("WGST", "Women and Gender Studies");
                 }};
-                        
-        //TODO: don't do queries all the time to get the correct department name, make another Map?
         
         ArrayList<Course> courseList = new ArrayList<>();
         try {
@@ -213,11 +200,9 @@ public class DatabaseWriter {
             while (fs.hasNextLine()) {
                 String[] courseArray = fs.nextLine().split(" ");
                 
-                
                 abbrv = courseArray[0];     
 
                 // query to get the department id
-
                 String fullDepartmentName = dictionary.get(abbrv);
                 
                 Statement statement = db_connection.createStatement();
@@ -228,8 +213,7 @@ public class DatabaseWriter {
                 String dept_id = Integer.toString(departmentNum);
                 
                 //System.out.println(dept_id);
-                //end query
-                
+
                 number = courseArray[1];
                 // Ignore the last two elements, create a string from the 
                 // remaining elements
@@ -248,9 +232,8 @@ public class DatabaseWriter {
                 courseList.add(course);
             }
         } catch (IOException | SQLException ex) {
-            System.out.println("Fail in Course");
+            System.out.println("Fail in Course txt");
             System.out.println("Error: " + ex.getMessage());
-            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return courseList;
@@ -299,8 +282,9 @@ public class DatabaseWriter {
 
             }
         } catch (IOException ex) {
-            System.out.println("Fail in read major");
-            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Fail in read major txt");
+            System.out.println("Error: " + ex.getMessage());
+
         }
 
         return majorList;
@@ -324,8 +308,6 @@ public class DatabaseWriter {
             int departmentNum = results.getInt(1);
 
             String dept_id = Integer.toString(departmentNum);
-                
-//                System.out.println(dept_id);
 
             statement_prepared.setString(1, dept_id);
             statement_prepared.setString(2, maj.getName());
@@ -445,22 +427,11 @@ public class DatabaseWriter {
                 
                 //if line is department
                 if (facultyTxt.toUpperCase().equals(facultyTxt)) {
-//                    System.out.println("Department " + facultyTxt);
                     department = facultyTxt;
-                    
-//                    Statement statement = db_connection.createStatement();
-////                    System.out.println(department);
-//                    ResultSet results = statement.executeQuery("SELECT id, building FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + department + "';");
-//                    results.next();
-//                    departmentNum = results.getInt(1);
-//                    building = results.getString(2);
-//                   
-//                    dept_id = Integer.toString(departmentNum);
                     facultyTxt = fs.nextLine();
                 }
                 if (!facultyTxt.toUpperCase().equals(facultyTxt)) {
                     Statement statement = db_connection.createStatement();
-//                    System.out.println(department);
                     ResultSet results = statement.executeQuery("SELECT id, building FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + department + "';");
                     results.next();
                     departmentNum = results.getInt(1);
@@ -471,7 +442,6 @@ public class DatabaseWriter {
                     
                     String[] faculty = facultyTxt.split("\\|");
                     facultyName = faculty[0];
-//                    System.out.println(faculty[0] + " is in " + departmentNum +  department);
 
                 
                     //generate random start date
@@ -482,7 +452,6 @@ public class DatabaseWriter {
                     String startDate = Integer.toString(_startDate);
 
                     //generate random end date
-//                    String endDate = "NULL";
                     
                     Random endDateRange = new Random();
                     int  _endDateChance = endDateRange.nextInt(100) + 1;
@@ -494,22 +463,15 @@ public class DatabaseWriter {
                     } else {
                         endDate = null;
                     }
-                    
-
-                    //assign offices
-
-                    //departmentNum = department's ID
 
                     Statement stmt = db_connection.createStatement();
                     ResultSet locResult = stmt.executeQuery("SELECT id FROM UNIVERSITY.LOCATION WHERE BUILDING= '" + building + "' and PURPOSE='office';");
                     locResult.next();
                     String location = locResult.getString(1);
                     
-                    
                     Faculty facultyMember = new Faculty(facultyName, dept_id, startDate, endDate, location);
                     facultyList.add(facultyMember);
                 }
-
             }
             
         } catch(IOException | SQLException ex) {
@@ -518,8 +480,6 @@ public class DatabaseWriter {
             
         }
         
-   
-
         return facultyList;
     }
     
@@ -540,8 +500,6 @@ public class DatabaseWriter {
             statement_prepared.setString(4, fac.getEndDate());
             statement_prepared.setString(5, fac.getOffice());
             
-            
-            
             statement_prepared.executeUpdate();
         }
         
@@ -552,9 +510,6 @@ public class DatabaseWriter {
      *****************/
     public ArrayList<Section> generateSections() {
         ArrayList<Section> sectionList = new ArrayList<>();
-
-        //get course ID, from course
-        //901 courses
         int generate = 0;
         
         try {
@@ -566,9 +521,7 @@ public class DatabaseWriter {
                 String courseNum = courseNumRes.getString(1);
                 String departmentId = courseNumRes.getString(2);
                 
-//                System.out.println("course number: " + courseNum);
                 int first = Integer.parseInt(courseNum.substring(0, 1));
-//                System.out.println("deparmentId " + departmentId);
                 switch (first) {
                     case 1:
                         generate = 4;
@@ -609,7 +562,6 @@ public class DatabaseWriter {
                 classroomRes.next();
                 //get the stuff: 
                 String classroomId = classroomRes.getString(1);
-                
 
                 /*
                 instructor
@@ -621,10 +573,7 @@ public class DatabaseWriter {
                 instructorRes.next();
                 //get the stuff: 
                 String instructorId = instructorRes.getString(1);
-                
-                
-                
-                
+
                 int startHour = 800;
                 for(int k=0; k < generate; k++){
                     // 0 - 12 for their semester id
@@ -641,14 +590,6 @@ public class DatabaseWriter {
                 }
 
             }
-        
-        
-        //assign a Prof from that teaches in the department
-        
-        //Offered once a year? each course switches off fall/spring
-        
-        //assign random location for classes
-        //keep track of which classrooms are taken? or assign them in order?
         
         
         } catch (SQLException ex) {
@@ -679,15 +620,11 @@ public class DatabaseWriter {
             statement_prepared.setString(3, sec.getOffered());
             statement_prepared.setString(4, sec.getLocation());
             statement_prepared.setInt(5, sec.getStartHour());
-            
-            //System.out.println(statement_prepared);
-            
-            
+
             statement_prepared.executeUpdate();
         }
         
     }
-    
 
     
         /*****************
@@ -703,7 +640,6 @@ public class DatabaseWriter {
         try {
             Scanner fs = new Scanner(new File(filename));
             while (fs.hasNextLine()) {
-                
                 String name = fs.nextLine();
                 
                 // 0 - 12 for their gradYear id
@@ -712,8 +648,7 @@ public class DatabaseWriter {
                 int  _gradId = gradYearSeason.nextInt(12) + 1;
                 String gradId = Integer.toString(_gradId);
                 //System.out.println(gradId);
-                
-                
+                                
                 //28 majors
                 Random studentMajor = new Random();
 
@@ -727,7 +662,6 @@ public class DatabaseWriter {
                 int  _adviserId = adviserRandom.nextInt(236) + 1;
                 String adviserId = Integer.toString(_adviserId);
                
-                
                 Student student = new Student(name, gradId, majorId, adviserId);
                 studentList.add(student);
 
@@ -756,7 +690,6 @@ public class DatabaseWriter {
             statement_prepared.setString(3, stu.getMajor());
             statement_prepared.setString(4, stu.getAdviser());
             
-            
             statement_prepared.executeUpdate();
         }
         
@@ -768,9 +701,7 @@ public class DatabaseWriter {
      *****************/
     public ArrayList<Enrollment> generateEnrollment() {
         ArrayList<Enrollment> enrollList = new ArrayList<>();
-        System.out.println("enrollment");
 
-        
         try {
         // get student ID
         Statement instructorStmt = db_connection.createStatement();
@@ -780,12 +711,10 @@ public class DatabaseWriter {
         ResultSet studentIDRes = instructorStmt.executeQuery(studentIdSQL);
         studentIDRes.next();
         //get the stuff: 
-
         
         while (studentIDRes.next()) {
             String studentId = studentIDRes.getString(1);
 
-            
             for (int c = 0; c < 4; c++){
                 //random course in '1245' sectioins
                 Random courseNumRand = new Random();
@@ -803,18 +732,18 @@ public class DatabaseWriter {
                     }};
                 Random randomizer = new Random();
                 String grade = grades.get(randomizer.nextInt(grades.size()));        
-                
-                //if section offered is not current, no grade
-                
+
                 Enrollment enrollment = new Enrollment(studentId, section, grade);
                 enrollList.add(enrollment);
             }   
             
         }
         
-        //return the ArrayList of enrollment
         } catch (SQLException ex) {
             System.out.println("fail in enroll");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
         }
         return enrollList;
     }
@@ -834,23 +763,19 @@ public class DatabaseWriter {
             statement_prepared.setString(2, enroll.getSection());
             statement_prepared.setString(3, enroll.getGrade());
 
-            //System.out.println(statement_prepared);
-            
-            
             statement_prepared.executeUpdate();
         }
         
     }
     
-    
-    
-    
     public void closeConnection() {
         try {
             db_connection.close();
-            System.out.println("Closing connection");
+            System.out.println("Closing database connection");
         } catch (SQLException ex) {
-            System.out.println(ex);
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
         }
     }
     
