@@ -476,12 +476,6 @@ HIST 371 Topics in African History
 HIST 391 Topics in Africana History
 HIST 485 Junior-Senior Seminar
 HIST 490 Senior Project
-IS 135 Exploring Britain
-IS 136 Exploring Malta and the Mediterranean
-IS 230 Introduction to International Studies
-IS 450 Global Citizenship
-IS 485 International Studies Seminar
-IS 490 Senior Project
 INTS 130 Scholars Colloquium
 JOUR 100 News Practicum
 JOUR 380 Internship
@@ -872,30 +866,3 @@ THE 352 Theatre History II
 THE 360 Directing
 THE 490 Senior Seminar
 THE 491 Senior Project
-WGST 130 Introduction to Women and Gender Studies
-WGST 131 Contact Improvisation
-WGST 147 Literature of African Peoples
-WGST 195 Biology of Race And Sex
-WGST 212 Sex in the Bible and the Qur'an
-WGST 225 Women in Science
-WGST 240 Africana Women's Writing
-WGST 242 Sociology of Gender
-WGST 243 Time of Stalin: Literature and Memoirs Literature and Memoirs
-WGST 245 Literature By Women
-WGST 251 African-American Literature
-WGST 260 Identity and Power
-WGST 270 Psychology and Aging
-WGST 290 Gender and Women's History
-WGST 320 Women and Gender in the Classical World
-WGST 331 Gender, Health and Medicine
-WGST 335 Masculinity in Film
-WGST 337 God and Gender
-WGST 350 Gendered Activism in a Global Context
-WGST 351 Gender and Crime
-WGST 354 Women, Representation, and Politics
-WGST 361 Chaucer and Medieval Literature
-WGST 368 Gender in Art
-WGST 381 Internship
-WGST 468 Seminar: Gender, Globalization, and Development
-WGST 485 Seminar: Topics in Women and Gender Studies
-WGST 490 Senior Project

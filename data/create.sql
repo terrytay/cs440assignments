@@ -70,7 +70,7 @@ create table UNIVERSITY.SECTION (
     instructor int,
     offered int,
     location int,
-    startHour time,
+    startHour int,
 
     PRIMARY KEY (id),
     FOREIGN KEY (course) REFERENCES COURSE(id),

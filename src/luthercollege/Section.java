@@ -8,7 +8,7 @@ public class Section {
     private final String instructor;
     private final String offered;
     private final String location;
-    private final String startHour;
+    private final int startHour;
 
     /**
      * @param _department
@@ -17,7 +17,7 @@ public class Section {
      * @param _title
      * @param _credit
      */
-    public Section(String _course, String _instructor, String _offered, String _location, String _startHour) {
+    public Section(String _course, String _instructor, String _offered, String _location, int _startHour) {
         this.course = _course;
         this.instructor = _instructor;
         this.offered = _offered;
@@ -55,7 +55,7 @@ public class Section {
     /**
      * @return start hour
      */
-    public String getStartHour() {
+    public int getStartHour() {
         return this.startHour;
     }
         

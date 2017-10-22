@@ -335,83 +335,6 @@ public class DatabaseWriter {
         
     }
     
-    
-    /*****************
-     * Read Student from .txt
-     * @param filename
-     *****************/
-    public ArrayList<Student> readStudentFromTxt(String filename) {
-        
-        String firstName;
-        String lastName;
-        
-        ArrayList<Student> studentList = new ArrayList<>();
-        try {
-            Scanner fs = new Scanner(new File(filename));
-            while (fs.hasNextLine()) {
-                
-                String name = fs.nextLine();
-                
-//                System.out.println(students);
-                
-                // 0 - 12 for their gradYear id
-                Random gradYearSeason = new Random();
-
-                int  _gradId = gradYearSeason.nextInt(12) + 1;
-                String gradId = Integer.toString(_gradId);
-                //System.out.println(gradId);
-                
-                
-                //28 majors
-                Random studentMajor = new Random();
-
-                int  _majorId = studentMajor.nextInt(28) + 1;
-                String majorId = Integer.toString(_majorId);
-                
-                //TODO
-                String Adviser;
-                
-                
-                Student student = new Student(name, gradId, majorId, "0");
-                studentList.add(student);
-
-            }
-        } catch (IOException ex) {
-            System.out.println("Fail in read major");
-            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return studentList;
-    }
-    
-    /*******************************
-     * Populate Student table
-     * @param studentList 
-     * @throws java.sql.SQLException 
-     *******************************/
-    public void writeStudentTable(ArrayList<Student> studentList) throws SQLException {
-        for (Student stu: studentList) {            
-            String sql = "insert into UNIVERSITY.STUDENT (name, graduationDate, major, adviser) VALUES(?, ?, ?, ?)"; 
-                    
-            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
-
-            statement_prepared.setString(1, stu.getName());
-            statement_prepared.setString(2, stu.getGradDate());
-            statement_prepared.setString(3, stu.getMajor());
-            statement_prepared.setString(4, stu.getAdviser());
-            
-            System.out.println(statement_prepared);
-            
-            
-            statement_prepared.executeUpdate();
-        }
-        
-    }
-    
-    
-    
-    
-    
     /*****************
      * Generate locations
      * @param filename
@@ -496,7 +419,396 @@ public class DatabaseWriter {
             statement_prepared.executeUpdate();
         }
     }
+      /*****************
+     * Read Faculty from .txt
+     * @param filename
+     *****************/
+    public ArrayList<Faculty> readFacultyFromTxt(String filename) {
+        ArrayList<Faculty> facultyList = new ArrayList<>();
+        String department;
+        Integer departmentNum;
+        String dept_id;
+        String facultyName;
+        String building;
+        String endDate;
+        
+        try {
+            Scanner fs = new Scanner(new File(filename));
+            department = "none";
+            while (fs.hasNextLine()) {
+                String facultyTxt = fs.nextLine();
+                
+                //https://stackoverflow.com/questions/12556637/java-id-like-to-ignore-an-empty-line-when-reading-a-file
+                if (facultyTxt.trim().equals("$") || facultyTxt.isEmpty() || facultyTxt.trim().equals("") || facultyTxt.trim().equals("\n")) {
+                    facultyTxt = fs.nextLine();
+                }
+                
+                //if line is department
+                if (facultyTxt.toUpperCase().equals(facultyTxt)) {
+//                    System.out.println("Department " + facultyTxt);
+                    department = facultyTxt;
+                    
+//                    Statement statement = db_connection.createStatement();
+////                    System.out.println(department);
+//                    ResultSet results = statement.executeQuery("SELECT id, building FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + department + "';");
+//                    results.next();
+//                    departmentNum = results.getInt(1);
+//                    building = results.getString(2);
+//                   
+//                    dept_id = Integer.toString(departmentNum);
+                    facultyTxt = fs.nextLine();
+                }
+                if (!facultyTxt.toUpperCase().equals(facultyTxt)) {
+                    Statement statement = db_connection.createStatement();
+//                    System.out.println(department);
+                    ResultSet results = statement.executeQuery("SELECT id, building FROM UNIVERSITY.DEPARTMENT WHERE NAME= '" + department + "';");
+                    results.next();
+                    departmentNum = results.getInt(1);
+                    building = results.getString(2);
+                    
+                
+                    dept_id = Integer.toString(departmentNum);
+                    
+                    String[] faculty = facultyTxt.split("\\|");
+                    facultyName = faculty[0];
+//                    System.out.println(faculty[0] + " is in " + departmentNum +  department);
 
+                
+                    //generate random start date
+                    //1-7 in SEMESTER table, no faculty start after current semester.
+                    //Once hiring is completed, then they get added to FACULTY table
+                    Random startDateNum = new Random();
+                    int  _startDate = startDateNum.nextInt(7) + 1;
+                    String startDate = Integer.toString(_startDate);
+
+                    //generate random end date
+//                    String endDate = "NULL";
+                    
+                    Random endDateRange = new Random();
+                    int  _endDateChance = endDateRange.nextInt(100) + 1;
+                    
+                    if (_endDateChance <= 12) {
+                        Random endDateRandom = new Random();
+                        int  _endDate = endDateRandom.nextInt(12) + 1;
+                        endDate = Integer.toString(_endDate);
+                    } else {
+                        endDate = null;
+                    }
+                    
+
+                    //assign offices
+
+                    //departmentNum = department's ID
+
+                    Statement stmt = db_connection.createStatement();
+                    ResultSet locResult = stmt.executeQuery("SELECT id FROM UNIVERSITY.LOCATION WHERE BUILDING= '" + building + "' and PURPOSE='office';");
+                    locResult.next();
+                    String location = locResult.getString(1);
+                    
+                    
+                    Faculty facultyMember = new Faculty(facultyName, dept_id, startDate, endDate, location);
+                    facultyList.add(facultyMember);
+                }
+
+            }
+            
+        } catch(IOException | SQLException ex) {
+            System.out.println("Failed in faculty reading/sql");
+            System.out.println(ex.getMessage());
+            
+        }
+        
+   
+
+        return facultyList;
+    }
+    
+    /*******************************
+     * Populate Faculty table
+     * @param facultyList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeFacultyTable(ArrayList<Faculty> facultyList) throws SQLException {
+        for (Faculty fac: facultyList) {            
+            String sql = "insert into UNIVERSITY.FACULTY (name, department, startDate, endDate, office) VALUES(?, ?, ?, ?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+
+            statement_prepared.setString(1, fac.getName());
+            statement_prepared.setString(2, fac.getDepartment());
+            statement_prepared.setString(3, fac.getStartDate());
+            statement_prepared.setString(4, fac.getEndDate());
+            statement_prepared.setString(5, fac.getOffice());
+            
+            
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
+    /*****************
+     * Generate sections
+     *****************/
+    public ArrayList<Section> generateSections() {
+        ArrayList<Section> sectionList = new ArrayList<>();
+
+        //get course ID, from course
+        //901 courses
+        int generate = 0;
+        
+        try {
+            for(int i=1; i <= 868; i++) {
+                //query to see what the course number is
+                Statement stmt = db_connection.createStatement();
+                ResultSet courseNumRes = stmt.executeQuery("SELECT number, department FROM UNIVERSITY.COURSE WHERE ID= '" + i + "' ;");
+                courseNumRes.next();
+                String courseNum = courseNumRes.getString(1);
+                String departmentId = courseNumRes.getString(2);
+                
+//                System.out.println("course number: " + courseNum);
+                int first = Integer.parseInt(courseNum.substring(0, 1));
+//                System.out.println("deparmentId " + departmentId);
+                switch (first) {
+                    case 1:
+                        generate = 4;
+                        break;
+                    case 2:
+                        generate = 3;
+                        break;
+                    case 3:
+                        generate = 2;
+                        break;
+                    case 4:
+                        generate = 1;
+                        break;
+                    default:
+                        break;
+                }
+                
+                /* 
+                get building from department 
+                */
+                //query to get the building from departmentId, check DEPARTMENT table
+                //select building from UNIVERSITY.DEPARTMENT where id = 5;
+                Statement buildingStmt = db_connection.createStatement();
+                String buildingSQL = "select building from UNIVERSITY.DEPARTMENT where id = " + departmentId + ";";
+                ResultSet buildingRes = buildingStmt.executeQuery(buildingSQL);
+                buildingRes.next();
+                String buildingName = buildingRes.getString(1);
+                
+                /*
+                location
+                */
+                //SQL statement to get the id's from location where the criteria fits
+                //SELECT column FROM table ORDER BY RAND() LIMIT 1
+                Statement classroomStmt = db_connection.createStatement();
+                String classroomIdSQL = "select id from UNIVERSITY.LOCATION where BUILDING = '" + buildingName + "' and purpose = 'classroom'"
+                        + "ORDER BY RAND() LIMIT 1;";
+                ResultSet classroomRes = classroomStmt.executeQuery(classroomIdSQL);
+                classroomRes.next();
+                //get the stuff: 
+                String classroomId = classroomRes.getString(1);
+                
+
+                /*
+                instructor
+                */
+                //get the instructor's id from the department id
+                Statement instructorStmt = db_connection.createStatement();
+                String instructorSQL = "select id from FACULTY where department = '" + departmentId + "' ORDER BY RAND() LIMIT 1;";
+                ResultSet instructorRes = instructorStmt.executeQuery(instructorSQL);
+                instructorRes.next();
+                //get the stuff: 
+                String instructorId = instructorRes.getString(1);
+                
+                
+                
+                
+                int startHour = 800;
+                for(int k=0; k < generate; k++){
+                    // 0 - 12 for their semester id
+                    Random offeredYearSeason = new Random();
+                    int  _semester = offeredYearSeason.nextInt(12) + 1;
+                    String semester = Integer.toString(_semester);
+                    
+                    Section section = new Section(courseNum, instructorId, semester, classroomId, startHour);
+                    sectionList.add(section);
+                    
+                    startHour = startHour + 115;
+
+                    classroomRes.next();
+                }
+
+            }
+        
+        
+        //assign a Prof from that teaches in the department
+        
+        //Offered once a year? each course switches off fall/spring
+        
+        //assign random location for classes
+        //keep track of which classrooms are taken? or assign them in order?
+        
+        
+        } catch (SQLException ex) {
+            System.out.println("Failed inside of section");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+        }
+        
+        //return the ArrayList of sections?
+        return sectionList;
+        
+    }
+    
+    /*******************************
+     * Populate SECTION table
+     * @param sectionList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeSectionTable(ArrayList<Section> sectionList) throws SQLException {
+        for (Section sec: sectionList) {            
+            String sql = "insert into UNIVERSITY.SECTION (course, instructor, offered, location, startHour) VALUES(?, ?, ?, ?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+
+            statement_prepared.setString(1, sec.getCourse());
+            statement_prepared.setString(2, sec.getInstructor());
+            statement_prepared.setString(3, sec.getOffered());
+            statement_prepared.setString(4, sec.getLocation());
+            statement_prepared.setInt(5, sec.getStartHour());
+            
+            //System.out.println(statement_prepared);
+            
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
+
+    
+        /*****************
+     * Read Student from .txt
+     * @param filename
+     *****************/
+    public ArrayList<Student> readStudentFromTxt(String filename) {
+        
+        String firstName;
+        String lastName;
+        
+        ArrayList<Student> studentList = new ArrayList<>();
+        try {
+            Scanner fs = new Scanner(new File(filename));
+            while (fs.hasNextLine()) {
+                
+                String name = fs.nextLine();
+                
+//                System.out.println(students);
+                
+                // 0 - 12 for their gradYear id
+                Random gradYearSeason = new Random();
+
+                int  _gradId = gradYearSeason.nextInt(12) + 1;
+                String gradId = Integer.toString(_gradId);
+                //System.out.println(gradId);
+                
+                
+                //28 majors
+                Random studentMajor = new Random();
+
+                int  _majorId = studentMajor.nextInt(28) + 1;
+                String majorId = Integer.toString(_majorId);
+                
+                //Adviser can be any faculty member. A student can change
+                //their adviser at any time.
+                
+                Random adviserRandom = new Random();
+                int  _adviserId = adviserRandom.nextInt(236) + 1;
+                String adviserId = Integer.toString(_adviserId);
+               
+                
+                Student student = new Student(name, gradId, majorId, adviserId);
+                studentList.add(student);
+
+            }
+        } catch (IOException ex) {
+            System.out.println("Fail in read major");
+            //Logger.getLogger(DatabaseReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return studentList;
+    }
+    
+    /*******************************
+     * Populate Student table
+     * @param studentList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeStudentTable(ArrayList<Student> studentList) throws SQLException {
+        for (Student stu: studentList) {            
+            String sql = "insert into UNIVERSITY.STUDENT (name, graduationDate, major, adviser) VALUES(?, ?, ?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+
+            statement_prepared.setString(1, stu.getName());
+            statement_prepared.setString(2, stu.getGradDate());
+            statement_prepared.setString(3, stu.getMajor());
+            statement_prepared.setString(4, stu.getAdviser());
+            
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
+    
+    /*****************
+     * Generate sections
+     *****************/
+    public void generateEnrollment() {
+        ArrayList<Enrollment> enrollList = new ArrayList<>();
+        System.out.println("enrollment");
+
+        // get student ID
+        
+        // get section ID
+        
+        // generate grade - A, B, C, D, F
+        
+        
+        
+        
+        //return the ArrayList of enrollment
+        
+    }
+    
+    /*******************************
+     * Populate ENROLL table
+     * @param enrollList 
+     * @throws java.sql.SQLException 
+     *******************************/
+    public void writeEnrollTable(ArrayList<Enrollment> enrollList) throws SQLException {
+        for (Enrollment enroll: enrollList) {            
+            String sql = "insert into UNIVERSITY.ENROLLMENT (student, section, grade) VALUES(?, ?, ?)"; 
+                    
+            PreparedStatement statement_prepared = this.db_connection.prepareStatement(sql);
+
+            statement_prepared.setString(1, enroll.getStudent());
+            statement_prepared.setString(2, enroll.getSection());
+            statement_prepared.setString(3, enroll.getGrade());
+
+            //System.out.println(statement_prepared);
+            
+            
+            statement_prepared.executeUpdate();
+        }
+        
+    }
+    
+    
     
     
     public void closeConnection() {
