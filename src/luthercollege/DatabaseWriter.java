@@ -706,8 +706,6 @@ public class DatabaseWriter {
                 
                 String name = fs.nextLine();
                 
-//                System.out.println(students);
-                
                 // 0 - 12 for their gradYear id
                 Random gradYearSeason = new Random();
 
@@ -768,21 +766,57 @@ public class DatabaseWriter {
     /*****************
      * Generate sections
      *****************/
-    public void generateEnrollment() {
+    public ArrayList<Enrollment> generateEnrollment() {
         ArrayList<Enrollment> enrollList = new ArrayList<>();
         System.out.println("enrollment");
 
+        
+        try {
         // get student ID
-        
-        // get section ID
-        
-        // generate grade - A, B, C, D, F
+        Statement instructorStmt = db_connection.createStatement();
+        String studentIdSQL = "select id from UNIVERSITY.STUDENT";
         
         
+        ResultSet studentIDRes = instructorStmt.executeQuery(studentIdSQL);
+        studentIDRes.next();
+        //get the stuff: 
+
         
+        while (studentIDRes.next()) {
+            String studentId = studentIDRes.getString(1);
+
+            
+            for (int c = 0; c < 4; c++){
+                //random course in '1245' sectioins
+                Random courseNumRand = new Random();
+                int _courseNum = courseNumRand.nextInt(1245) + 1;
+                String section = Integer.toString(_courseNum);
+                
+                // generate grade - A, B, C, D, F
+                ArrayList<String> grades = new ArrayList<String>()
+                    {{
+                        add("A");
+                        add("B");
+                        add("C");
+                        add("D");
+                        add("F");
+                    }};
+                Random randomizer = new Random();
+                String grade = grades.get(randomizer.nextInt(grades.size()));        
+                
+                //if section offered is not current, no grade
+                
+                Enrollment enrollment = new Enrollment(studentId, section, grade);
+                enrollList.add(enrollment);
+            }   
+            
+        }
         
         //return the ArrayList of enrollment
-        
+        } catch (SQLException ex) {
+            System.out.println("fail in enroll");
+        }
+        return enrollList;
     }
     
     /*******************************

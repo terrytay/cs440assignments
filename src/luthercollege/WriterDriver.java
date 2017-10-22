@@ -175,6 +175,21 @@ public class WriterDriver {
             // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
         }
   
+        
+        /***************************
+        *   Generate enrollment
+        *  and populate the database
+        ****************************/
+        ArrayList<Enrollment> enrollList = dw.generateEnrollment();
+        try {
+            dw.writeEnrollTable(enrollList);
+        } catch (SQLException ex) { 
+            System.out.println("Fail in driver: major");
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            // Logger.getLogger(DatabaseWriterDriver.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

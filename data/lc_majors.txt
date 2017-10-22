@@ -23,7 +23,6 @@ German|Modern Languages, Literatures and Linguistics
 Health and Fitness Promotion|Health and Physical Education
 History|History
 International Business|Economics, Accounting, and Management
-International Studies|International Studies
 Journalism|Communication Studies
 Linguistics|Modern Languages, Literatures and Linguistics
 Management|Economics, Accounting, and Management
@@ -46,4 +45,3 @@ Social Work|Sociology, Anthropology, Social Work
 Sociology|Sociology, Anthropology, Social Work
 Spanish|Modern Languages, Literatures and Linguistics
 Theatre|Visual and Performing Arts
-Women and Gender Studies|Women and Gender Studies
