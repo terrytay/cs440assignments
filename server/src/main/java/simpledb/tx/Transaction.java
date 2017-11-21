@@ -1,10 +1,12 @@
 package simpledb.tx;
 
+import java.util.ArrayList;
 import simpledb.server.SimpleDB;
 import simpledb.file.Block;
 import simpledb.buffer.*;
 import simpledb.tx.recovery.RecoveryMgr;
 import simpledb.tx.concurrency.ConcurrencyMgr;
+import simpledb.tx.recovery.CheckpointRecord;
 
 /**
  * Provides transaction management for clients,
@@ -12,13 +14,18 @@ import simpledb.tx.concurrency.ConcurrencyMgr;
  * and in general satisfy the ACID properties.
  * @author Edward Sciore
  */
-public class Transaction {
+public class Transaction extends Thread {
    private static int nextTxNum = 0;
    private static final int END_OF_FILE = -1;
-   private RecoveryMgr    recoveryMgr;
+   private RecoveryMgr recoveryMgr;
    private ConcurrencyMgr concurMgr;
    private int txnum;
    private BufferList myBuffers = new BufferList();
+   
+   private static boolean checkPointInProgress = false;
+   private static ArrayList<Transaction> transactionList = new ArrayList();
+   
+   private static Integer lock = new Integer(0);
    
    /**
     * Creates a new transaction and its associated 
@@ -36,6 +43,68 @@ public class Transaction {
       txnum       = nextTxNumber();
       recoveryMgr = new RecoveryMgr(txnum);
       concurMgr   = new ConcurrencyMgr();
+
+    try {
+        while (checkPointInProgress) {
+            lock.wait(1000);
+            System.out.println("waiting");
+        }
+
+        if (!checkPointInProgress) {
+            transactionList.add(this);
+        }
+        
+        if (txnum % 10 == 0) {
+            System.out.println("performing a QCHKP");
+//            performQCHKP performQCHKP = new performQCHKP();
+            
+            Thread thread = new Thread(new performQCHKP());
+//            thread(performQCHKP);
+            thread.start();
+            
+        }
+    } catch(InterruptedException e) {
+            System.out.println("FAIL in constructor");
+        }
+   }
+   
+   /**
+    * Performs a quiescent checkpoint.
+    * After it has 10 transactions
+    */
+   class performQCHKP extends Thread {
+
+        performQCHKP() {
+            try {   
+                while (checkPointInProgress) {
+                    lock.wait(1000);
+                    
+                    System.out.println("Waiting in performQCHKP");
+                }
+
+                checkPointInProgress = true;
+
+                SimpleDB.bufferMgr().flushAll();
+                int lsn = new CheckpointRecord().writeToLog();
+                SimpleDB.logMgr().flush(lsn);
+
+                checkPointInProgress = false;
+            } catch (InterruptedException ex) {
+                System.out.println(ex);
+            }
+       }
+       
+//       public void run() {
+//           while (transactionList.size() != 0) {
+//               synchronized (Transaction.checkPointInProgress) try {
+//                   wait(1000);
+//               } catch () {
+//                   
+//               }
+//           }
+//           
+//       }
+
    }
    
    /**
@@ -48,6 +117,8 @@ public class Transaction {
       recoveryMgr.commit();
       concurMgr.release();
       myBuffers.unpinAll();
+      //TODO: remove from transactionList
+      transactionList.remove(this);
       System.out.println("transaction " + txnum + " committed");
    }
    
@@ -62,6 +133,8 @@ public class Transaction {
       recoveryMgr.rollback();
       concurMgr.release();
       myBuffers.unpinAll();
+      //TODO: remove from transactionList
+      transactionList.remove(this);
       System.out.println("transaction " + txnum + " rolled back");
    }
    

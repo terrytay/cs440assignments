@@ -52,6 +52,12 @@ class BasicBufferMgr {
             }
         }
     }
+    
+    synchronized void flushAll() {
+        for (Buffer buff : bufferpool) {
+            buff.flush();
+        }
+    }
 
     /**
      * Pins a buffer to the specified block. If there is already a buffer
