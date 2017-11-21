@@ -56,7 +56,6 @@ public class Transaction extends Thread {
         
         if (txnum % 10 == 0) {
             System.out.println("performing a QCHKP");
-//            performQCHKP performQCHKP = new performQCHKP();
             
             Thread thread = new Thread(new performQCHKP());
 //            thread(performQCHKP);
@@ -78,7 +77,6 @@ public class Transaction extends Thread {
             try {   
                 while (checkPointInProgress) {
                     lock.wait(1000);
-                    
                     System.out.println("Waiting in performQCHKP");
                 }
 
@@ -117,7 +115,6 @@ public class Transaction extends Thread {
       recoveryMgr.commit();
       concurMgr.release();
       myBuffers.unpinAll();
-      //TODO: remove from transactionList
       transactionList.remove(this);
       System.out.println("transaction " + txnum + " committed");
    }
@@ -133,7 +130,6 @@ public class Transaction extends Thread {
       recoveryMgr.rollback();
       concurMgr.release();
       myBuffers.unpinAll();
-      //TODO: remove from transactionList
       transactionList.remove(this);
       System.out.println("transaction " + txnum + " rolled back");
    }
