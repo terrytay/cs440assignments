@@ -20,8 +20,6 @@ public class TransactionTest extends Thread {
     @Before
     public void setUp() {
       SimpleDB.init("testdb");
-    //    instance = SimpleDB.Transaction();
-
     }
   
     @After
@@ -78,6 +76,35 @@ public class TransactionTest extends Thread {
      */
     @Test
     public void QCPUnitTest2() {
+        System.out.println("Test 2");
+        try {
+            for (int i = 0; i < 9; i++) {
+                Transaction transaction = new Transaction();
+                Thread thread = new Thread(transaction);
+                thread.start();
+                
+                thread.sleep(1000);
+            }
+            Thread.sleep(2000);
+        
+        System.out.println(Transaction.transactionList.size());
+            
+        for (Transaction tran : Transaction.transactionList) {
+//        while (!Transaction.transactionList.isEmpty()) {
+//            tran.commit();
+//            Thread.sleep(2000);
+            
+            Thread thread = new Thread(tran);
+            thread.start();
 
+            tran.commit();
+            thread.sleep(1000);
+            
+        }
+            
+            
+
+        } catch (Exception ex) {}
+        
     }
 }

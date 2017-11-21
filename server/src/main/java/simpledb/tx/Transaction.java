@@ -23,7 +23,7 @@ public class Transaction extends Thread {
    private BufferList myBuffers = new BufferList();
    
    private static boolean checkPointInProgress = false;
-   private static ArrayList<Transaction> transactionList = new ArrayList();
+   public static ArrayList<Transaction> transactionList = new ArrayList();
    
    private static Integer lock = new Integer(0);
    
@@ -54,7 +54,7 @@ public class Transaction extends Thread {
             transactionList.add(this);
         }
         
-        if (txnum % 10 == 0) {
+        if (txnum % 10 == 0 & transactionList.isEmpty()) {
             System.out.println("performing a QCHKP");
             
             Thread thread = new Thread(new performQCHKP());
