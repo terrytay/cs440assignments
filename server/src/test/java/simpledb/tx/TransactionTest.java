@@ -78,7 +78,7 @@ public class TransactionTest extends Thread {
     public void QCPUnitTest2() {
         System.out.println("Test 2");
         try {
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < 10; i++) {
                 Transaction transaction = new Transaction();
                 Thread thread = new Thread(transaction);
                 thread.start();
@@ -88,22 +88,26 @@ public class TransactionTest extends Thread {
             Thread.sleep(2000);
         
         System.out.println(Transaction.transactionList.size());
-            
-        for (Transaction tran : Transaction.transactionList) {
-//        while (!Transaction.transactionList.isEmpty()) {
-//            tran.commit();
-//            Thread.sleep(2000);
-            
+        
+        boolean flag = true;
+        while (flag) {
+                
+            Transaction tran = Transaction.transactionList.get(0);
+
             Thread thread = new Thread(tran);
             thread.start();
 
             tran.commit();
             thread.sleep(1000);
-            
-        }
-            
-            
 
+            if (Transaction.transactionList.isEmpty()) {
+                flag = false;
+            }
+            
+            System.out.println("Size of transactionlist");
+            System.out.println(Transaction.transactionList.size());
+        }
+        
         } catch (Exception ex) {}
         
     }
