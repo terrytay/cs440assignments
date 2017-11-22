@@ -54,7 +54,7 @@ public class Transaction extends Thread {
             transactionList.add(this);
         }
         
-        if (txnum % 10 == 0 & transactionList.isEmpty()) {
+        if (txnum % 10 == 0) {
             System.out.println("performing a QCHKP");
             
             Thread thread = new Thread(new performQCHKP());

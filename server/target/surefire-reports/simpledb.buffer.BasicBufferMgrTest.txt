@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: simpledb.buffer.BasicBufferMgrTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 1, Errors: 0, Skipped: 5, Time elapsed: 0.097 sec <<< FAILURE!
-testClockStrategy(simpledb.buffer.BasicBufferMgrTest)  Time elapsed: 0.026 sec  <<< FAILURE!
+Tests run: 9, Failures: 1, Errors: 0, Skipped: 5, Time elapsed: 0.019 sec <<< FAILURE!
+testClockStrategy(simpledb.buffer.BasicBufferMgrTest)  Time elapsed: 0.007 sec  <<< FAILURE!
 java.lang.AssertionError: expected:<70> but was:<40>
 	at org.junit.Assert.fail(Assert.java:93)
 	at org.junit.Assert.failNotEquals(Assert.java:647)
