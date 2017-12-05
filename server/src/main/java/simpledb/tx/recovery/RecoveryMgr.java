@@ -50,7 +50,7 @@ public class RecoveryMgr {
       SimpleDB.bufferMgr().flushAll(txnum);
       int lsn = new CheckpointRecord().writeToLog();
       SimpleDB.logMgr().flush(lsn);
-      
+
    }
 
    /**

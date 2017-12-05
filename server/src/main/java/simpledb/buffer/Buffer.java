@@ -20,9 +20,6 @@ public class Buffer {
    private int modifiedBy = -1;  // negative means not modified
    private int logSequenceNumber = -1; // negative means no corresponding log record
 
-   private int timeIn;
-   private int timeOut;
-    
    /**
     * Creates a new buffer, wrapping a new 
     * {@link simpledb.file.Page page}.  
@@ -132,17 +129,15 @@ public class Buffer {
    /**
     * Increases the buffer's pin count.
     */
-   void pin(int count) {
+   void pin() {
       pins++;
-      setTimeIn(count);
    }
 
    /**
     * Decreases the buffer's pin count.
     */
-   void unpin(int count) {
+   void unpin() {
       pins--;
-      setTimeOut(count);
    }
 
    /**
@@ -191,29 +186,5 @@ public class Buffer {
       fmtr.format(contents);
       blk = contents.append(filename);
       pins = 0;
-   }
-   
-   
-   /**
-    * set timeIn
-    */
-   void setTimeIn(int count) {
-       timeIn = count;
-   }
-   
-   /**
-    * settimeOut
-    */
-   
-   void setTimeOut(int count) {
-       timeOut = count;
-   }
-   
-    int getTimeIn() {
-       return timeIn;
-   }
-    
-   int getTimeOut() {
-       return timeOut;
    }
 }

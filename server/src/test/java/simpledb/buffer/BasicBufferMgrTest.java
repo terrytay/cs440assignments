@@ -75,6 +75,7 @@ public class BasicBufferMgrTest {
    */
   @Test
   public void testFIFOStrategy() {
+    thrown.expect(UnsupportedOperationException.class); //  remove this line once useFIFOStrategy is implemented
     int expectedResult, result;
     System.out.println("FIFO Strategy");
     instance.setStrategy(1);
@@ -93,6 +94,7 @@ public class BasicBufferMgrTest {
    */
   @Test
   public void testLRUStrategy() {
+    thrown.expect(UnsupportedOperationException.class); //  remove this line once useLRUStrategy is implemented
     int expectedResult, result;
     System.out.println("LRU Strategy");
     instance.setStrategy(2);
@@ -111,6 +113,7 @@ public class BasicBufferMgrTest {
    */
   @Test
   public void testClockStrategy() {
+    thrown.expect(UnsupportedOperationException.class); //  remove this line once useClockStrategy is implemented
     int expectedResult, result;
     System.out.println("Clock Strategy");
     instance.setStrategy(3);
